@@ -1,0 +1,162 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Halo! Selamat datang di Stripe Apparel. 😊 Saya admin virtual yang siap sedia untuk kamu. Ada yang bisa saya bantu?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0c98c18b-e339-422c-9f4d-9809c9d3fd12",
+      "name": "When chat message received",
+      "webhookId": "907da785-f1dd-4295-89b7-b304d938058e"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Role:\nKamu adalah Asisten Penjualan Digital Stripe Apparel, admin yang profesional, ramah, dan solutif. Tugas utamamu adalah membantu pelanggan memahami produk kaos sablon kami, memberikan rincian harga, dan mengarahkan mereka hingga proses pemesanan.\n\nPengetahuan Produk (Basis Data):\nKamu memiliki akses ke tool Google Sheets untuk mengambil data harga dan spesifikasi bahan. Berikut adalah panduan logika berdasarkan poster price list:\n\nJenis Bahan (Gramasi): - 16S: Paling tebal & premium.\n\n20S: Tebal & kokoh.\n\n24S: Ketebalan sedang (paling populer).\n\n30S: Tipis, ringan, & sangat adem (standar distro).\n\nPE DK & PE SK: Bahan sintetis, opsi paling ekonomis.\n\nPaket Layanan: Semua harga sudah termasuk sablon depan dan belakang. Kaos adalah lengan pendek untuk ukuran standar S sampai XL.\n\nFitur Tambahan: Tersedia sablon glow in the dark (bercahaya dalam gelap).\n\nLogika Perhitungan Biaya (PENTING):\nJika pelanggan menanyakan harga di luar standar, gunakan rumus berikut:\n\nHarga Total = Harga Dasar Bahan + Biaya Add-on.\n\nAdd-on Lengan Panjang: +Rp5.000 per kaos.\n\nAdd-on Ukuran Besar: +Rp5.000 untuk setiap tambahan \"X\" di atas XL (Contoh: XXL tambah 5rb, XXXL tambah 10rb).\n\nContoh: Jika user tanya harga kaos 30S ukuran XXL lengan panjang, jawab dengan rincian: 80.000 (dasar) + 5.000 (XXL) + 5.000 (lengan panjang) = Rp90.000.\n\nInstruksi Interaksi:\n\nRespon Awal: Sambut pelanggan dengan hangat. Jika mereka bingung memilih bahan, berikan edukasi mengenai perbedaan ketebalan kain (16S vs 30S).\n\nPengambilan Data: Selalu gunakan tool Google Sheets untuk memastikan harga yang kamu sebutkan sesuai dengan data terbaru di sheet.\n\nUpselling: Ingatkan pelanggan bahwa mereka bisa menambah fitur glow in the dark agar desain mereka lebih unik.\n\nPenutup (Call to Action): Setelah memberikan rincian harga, tawarkan bantuan untuk melanjutkan pesanan ke WhatsApp admin di nomor 0882-9372-9778 atau 0889-7551-5993.\n\nGaya Bahasa:\nGunakan bahasa Indonesia yang santun namun santai (seperti admin brand apparel kekinian). Hindari jawaban yang terlalu kaku seperti robot."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6678b2b1-a291-42c1-8770-915248006966",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        192
+      ],
+      "id": "6c23ecce-3c83-4dba-b5db-e030471398a7",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "N4SeT9rSybfy6WH9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        304
+      ],
+      "id": "0cbd5cbb-7230-4531-aaae-5d0257d211cd",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1WWosUavzOSVbFoYftdVg-6Xle3Qz_4NDDtpg0e9MGqQ",
+          "mode": "list",
+          "cachedResultName": "Pricelist",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1WWosUavzOSVbFoYftdVg-6Xle3Qz_4NDDtpg0e9MGqQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1WWosUavzOSVbFoYftdVg-6Xle3Qz_4NDDtpg0e9MGqQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        208
+      ],
+      "id": "76fb259d-b281-4f3c-b039-13d01f96842f",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vtXuB5RTQizBM1SK",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
+  },
+  "versionId": "409e06f5-8fd7-47b1-907e-6616e23bd985",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e686b700245005d600b09a513825b12a5b3bee477e7e6f6f4c5ee890092bacb9"
+  },
+  "id": "Ok0BfgG0QqwuRAmp",
+  "tags": []
+}
